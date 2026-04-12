@@ -45,6 +45,9 @@ What is the absolute minimum possible answer? The book with the maximum pages (s
 What is the absolute maximum possible answer? The sum of all pages (if one poor student gets all the books).
 This creates our search space!
 
+The Edge Case: Always check if K > N. Students often forget that you can't divide 3 books among 5 students if everyone needs at least one.
+Condition studentsReq <= k: Why it's <= and not just ==. Even if an allocation requires fewer students than K, we can easily split those contiguous chunks further to accommodate exactly K students without exceeding the mid limit.
+
 ----------------------------------------------------------------------------------------
 COMPLEXITY:
 - Time Complexity: O(N * log(sum - max)) - [Reason: We iterate through N elements in our isPossible function for every log(sum - max) binary search step.]
