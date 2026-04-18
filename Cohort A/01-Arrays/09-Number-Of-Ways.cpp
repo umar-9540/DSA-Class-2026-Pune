@@ -58,6 +58,13 @@ Concept: We iterate through the array, maintaining a currentSum. We keep a runni
 Time Complexity: O(N) — We traverse the array exactly twice (once for total sum, once to count ways).
 Space Complexity: O(1) — Only a few integer variables are used.
 
+The Order of if Statements (The Zero Target Trap):
+Look closely at the for loop. We check currentSum == 2 * target BEFORE we check currentSum == target. why!
+Example: What if the array is [0, 0, 0, 0]? The total sum is 0, so the target is 0.
+If we hit an index where the sum is 0, it is technically BOTH target and 2 * target simultaneously.
+If we update countT before adding to ways, we will mistakenly pair a cut with itself.
+By checking 2 * target first, we guarantee that the ways variable only pairs with cuts that happened strictly before the current index.
+
 ----------------------------------------------------------------------------------------
 COMPLEXITY:
 - Time Complexity: O(N) — We traverse the array exactly twice (once for total sum, once to count ways).
