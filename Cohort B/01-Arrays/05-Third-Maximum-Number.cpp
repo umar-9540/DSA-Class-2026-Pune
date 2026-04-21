@@ -42,24 +42,74 @@ Follow up: Can you find an O(n) solution?
 
 ----------------------------------------------------------------------------------------
 INTUITION AND APPROACH:
-[Explain the core logic in plain English. This is where you explain the "Why".]
-- Why use this pattern? (e.g., "Since the search space is monotonic, we can use Binary Search.")
-- Step 1: Sort the array to ensure stalls are in order.
-- Step 2: Set our low pointer to 1 (minimum possible distance) and high pointer to (max - min).
-- Step 3: Use a helper function `isPossible()` to check if we can place all cows with at least `mid` distance.
+Approach 1: Sorting
+Sort the array descending and iterate, counting unique elements.
+- Time Complexity: O(n * log n)
+- Space Complexity: O(1) or O(n) depending on the sorting algorithm.
 
-----------------------------------------------------------------------------------------
-DRY RUN (With Sample Test Case):
-Input: stalls = [1, 2, 4, 8, 9], k = 3
-- Attempt 1: mid = 4. Can we place 3 cows? 
-  Cow 1 at 1. Cow 2 at 1+4=5 (Closest is 8). Cow 3 at 8+4=12 (Out of bounds). False.
-- Attempt 2: mid = 3. Can we place 3 cows?
-  Cow 1 at 1. Cow 2 at 1+3=4 (Stall 4). Cow 3 at 4+3=7 (Closest is 8). True!
+Approach 2: Three Pointers / Variables
+Keep track of the top three distinct maximums directly. Use long long to avoid issues with INT_MIN existing in the array.
+- Time Complexity: O(n)
+- Space Complexity: O(1)
+
+The INT_MIN Trap: The constraint is -2^31 <= nums[i]. If INT_MIN is in the array, using INT_MIN as an "empty" flag will fail. Upgrading to long long elegantly solves this.
+
+The "Shift" Logic: When a new first max is found, second becomes third, and first becomes second.
 
 ----------------------------------------------------------------------------------------
 COMPLEXITY:
-- Time Complexity: O(N log(Max Distance)) - [Reason: We iterate through N elements in our isPossible function for every log(Max Distance) binary search step.]
-- Space Complexity: O(1) - [Reason: No extra space is used, only pointers.]
+- Time Complexity: O(n)
+- Space Complexity: O(1)
 ========================================================================================
 */
 
+// APPROACH 1:
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int thirdMax(std::vector<int>& nums) {
+        std::sort(nums.rbegin(), nums.rend());
+        int distinctCount = 1;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] != nums[i - 1]) {
+                distinctCount++;
+            }
+            if (distinctCount == 3) {
+                return nums[i];
+            }
+        }
+        return nums[0];
+    }
+};
+
+// APPROACH 2:
+#include <vector>
+#include <climits>
+
+class Solution {
+public:
+    int thirdMax(std::vector<int>& nums) {
+        long long first = LLONG_MIN;
+        long long second = LLONG_MIN;
+        long long third = LLONG_MIN;
+        
+        for (int num : nums) {
+            if (num == first || num == second || num == third) continue;
+            
+            if (num > first) {
+                third = second;
+                second = first;
+                first = num;
+            } else if (num > second) {
+                third = second;
+                second = num;
+            } else if (num > third) {
+                third = num;
+            }
+        }
+        
+        return third == LLONG_MIN ? first : third;
+    }
+};
